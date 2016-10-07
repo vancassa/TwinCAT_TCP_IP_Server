@@ -13,13 +13,13 @@ Since TwinCAT running in my CX5120 is the TwinCAT Runtime (XAR), the development
 
 The IP address of all computers are set as DHCP. That's why in the example, the IP address of the server is listed as '169.254.28.233'.
 
-How to use:
+## Usage
 
 1. Run the TwinCAT first
 2. Run the client program
 3. When it's connected, the terminal will print "PC connected", "out1 on", and "out2 on", and the LED light of the 2088 card will light up
 
-# How it works
+## How it works
 
 What's happening inside the program:
 
@@ -29,7 +29,7 @@ What's happening inside the program:
 4. The function block FB_SocketSend and FB_SocketReceive use this 'hSocket' variable to send and receive data.
 
 
-# Common errors
+## Common errors
 
 TwinCAT Error and Error ID are stored in the variable 'err' and 'errid' respectively. Some common errors found:
 
