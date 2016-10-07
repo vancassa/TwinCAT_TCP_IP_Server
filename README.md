@@ -18,3 +18,24 @@ How to use:
 1. Run the TwinCAT first
 2. Run the client program
 3. When it's connected, the terminal will print "PC connected", "out1 on", and "out2 on", and the LED light of the 2088 card will light up
+
+# How it works
+
+What's happening inside the program:
+
+1. The function block FB_SocketConnect will open the socket at the specific port.
+2. When the Python client is run, it will connect to the socket and return "connected" in the terminal.
+3. Every half a second (the timing can be changed), FB_SocketAccept will accept any incoming connection, and populate the variable 'hSocket' with the local address of the server and remote address of the client.
+4. The function block FB_SocketSend and FB_SocketReceive use this 'hSocket' variable to send and receive data.
+
+
+# Common errors
+
+TwinCAT Error and Error ID are stored in the variable 'err' and 'errid' respectively. Some common errors found:
+
+   * 8002 : Variable 'hSocket' is not populated with the correct address. The client should connect first, and TwinCAT calls the FB_SocketAccept after that. This will populate the variable 'hSocket'.
+   * 8003 : The port is already opened. Reset Cold the program and Run again.  
+   * : I don't know. Seems like there's something wrong with the installation of TF6310.  
+   
+Python error:
+   * Connection is refused: Make sure to disable the firewall of your server PC  
