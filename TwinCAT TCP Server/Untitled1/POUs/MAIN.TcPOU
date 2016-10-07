@@ -1,0 +1,251 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4020.6">
+  <POU Name="MAIN" Id="{51edf94c-8a91-4167-a283-3931655e3d9d}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM MAIN
+VAR
+
+	fbSocketCloseAll				: FB_SocketCloseAll :=  ( sSrvNetID := '', tTimeout := DEFAULT_ADS_TIMEOUT );
+	bCloseAll					: BOOL := TRUE;
+	
+	SrvNetId: STRING := '';
+	ServerAddress : STRING := '169.254.28.233';
+	ServerPort : UDINT := 30000;
+	Timeout : TIME := T#10S;
+	
+	fbSocketListen: FB_SocketListen := (bExecute := TRUE);
+	fbSocketReceive: FB_SocketReceive;
+	fbSocketAccept: FB_SocketAccept;
+	fbSocketClose : FB_SocketClose;
+	fbSocketConnect: Tc2_TcpIp.FB_SocketConnect;
+	fbSocketSend : Tc2_TcpIp.FB_SocketSend;
+	
+	test: STRING;
+	command	:STRING;
+	sAccept : STRING := 'Accepted';
+	
+	bBusy: BOOL;
+	err: BOOL;
+	errid: UDINT;
+	hListen: T_HSOCKET;
+	hSocket: T_HSOCKET;
+	bStart: BOOL;
+	bStart2: BOOL;
+	bStart3: BOOL;
+	bStart4: BOOL;
+	bStart5: BOOL;
+	state: INT;
+	bConnectionAccepted: BOOL;
+	
+	timer: Tc2_Standard.TON;
+	
+	bOUt1 AT %Q*: BOOL;
+	bOut2 AT %Q*: BOOL;
+	bStart6: BOOL;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF bCloseAll THEN (*On PLC reset or program download close all old connections *)
+	bCloseAll := FALSE;
+	fbSocketCloseAll( bExecute:= TRUE );
+ELSE
+	fbSocketCloseAll( bExecute:= FALSE );
+END_IF
+
+timer(IN:= , PT:= T#500MS, Q=> , ET=> );
+
+fbSocketListen(
+		sSrvNetId:= SrvNetId, 
+		sLocalHost:= ServerAddress, 
+		nLocalPort:= ServerPort, 
+		bExecute:= , 
+		tTimeout:= Timeout, 
+		bBusy=> bBusy, 
+		bError=> err, 
+		nErrId=> errid, 
+		hListener=> hListen);
+
+fbSocketAccept(
+		sSrvNetId:= SrvNetId, 
+		hListener:= hListen, 
+		bExecute:= , 
+		tTimeout:= Timeout, 
+		bAccepted=> bConnectionAccepted, 
+		bBusy=> bBusy, 
+		bError=> err, 
+		nErrId=> errid, 
+		hSocket=> hSocket);
+	
+fbSocketSend(
+		sSrvNetId:= SrvNetId, 
+		hSocket:= hSocket, 
+		cbLen:= , 
+		pSrc:= , 
+		bExecute:= , 
+		tTimeout:= Timeout, 
+		bBusy=> bBusy, 
+		bError=> err, 
+		nErrId=> errid);
+
+fbSocketReceive(
+		sSrvNetId:= SrvNetId, 
+		hSocket:= hSocket, 
+		cbLen:= SIZEOF(command), 
+		pDest:= ADR(command), 
+		bExecute:= , 
+		tTimeout:= Timeout, 
+		bBusy=> bBusy, 
+		bError=> err, 
+		nErrId=> errid, 
+		nRecBytes=> );
+		
+CASE state OF 
+	//Open the port
+	0:
+		fbSocketListen.bExecute := FALSE;
+		state := 10;
+		
+	10:
+	//Accept connection every half a second
+	IF NOT fbSocketListen.bBusy AND NOT fbSocketListen.bError THEN
+		fbSocketAccept.bExecute := FALSE;
+		timer.IN := TRUE;
+
+		IF bConnectionAccepted THEN
+			//Send acknowledgment
+			fbSocketSend.cbLen := SIZEOF('PC Connected');
+			fbSocketSend.pSrc := ADR('PC Connected');
+			fbSocketSend.bExecute := TRUE;
+			state := 30;
+		ELSIF timer.Q THEN
+			fbSocketAccept.bExecute := TRUE;
+			timer.IN := FALSE;
+		END_IF
+		
+	END_IF
+	
+	
+	30:
+	IF NOT fbSocketSend.bBusy AND NOT fbSocketSend.bError THEN 
+		fbSocketSend.bExecute := FALSE;
+		fbSocketReceive.bExecute := TRUE; //Receive command
+		state := 40;
+	END_IF
+	
+	
+	40:	
+	IF NOT fbSocketReceive.bBusy AND NOT fbSocketReceive.bError THEN
+		fbSocketReceive.bExecute := FALSE;
+	END_IF
+	
+	//COMMAND 1
+	50:
+	bOUt1 := TRUE;
+	
+	// Send acknoledgment
+	fbSocketSend.cbLen := SIZEOF('out1 ON');
+	fbSocketSend.pSrc := ADR('out1 ON');
+	fbSocketSend.bExecute := TRUE;
+	command := '';
+	state := 60;
+	
+	60:
+	IF NOT fbSocketSend.bBusy AND NOT fbSocketSend.bError THEN
+		fbSocketSend.bExecute := FALSE;
+		fbSocketReceive.bExecute := TRUE;
+		state := 40;
+	END_IF
+	
+	//COMMAND 2
+	70:
+	bOUt2 := TRUE;
+	
+	// Send acknoledgment
+	fbSocketSend.cbLen := SIZEOF('out2 ON');
+	fbSocketSend.pSrc := ADR('out2 ON');
+	fbSocketSend.bExecute := TRUE;
+	command := '';
+	state := 80;
+	
+	80:
+	IF NOT fbSocketSend.bBusy AND NOT fbSocketSend.bError THEN
+		fbSocketSend.bExecute := FALSE;
+		fbSocketReceive.bExecute := TRUE;
+		state := 40;
+	END_IF
+END_CASE
+
+IF command = 'out1' THEN
+	state := 50;
+END_IF
+
+IF command = 'out2' THEN
+	state := 70;
+END_IF
+
+
+
+		
+		
+		
+//FOR TESTING
+(*
+fbSocketListen(
+		sSrvNetId:= SrvNetId, 
+		sLocalHost:= ServerAddress, 
+		nLocalPort:= ServerPort, 
+		bExecute:= bStart, 
+		tTimeout:= Timeout, 
+		bBusy=> bBusy, 
+		bError=> err, 
+		nErrId=> errid, 
+		hListener=> hListen);
+		
+fbSocketAccept(
+		sSrvNetId:= SrvNetId, 
+		hListener:= hListen, 
+		bExecute:= bStart2, 
+		tTimeout:= Timeout, 
+		bAccepted=> , 
+		bBusy=> , 
+		bError=> , 
+		nErrId=> , 
+		hSocket=> hSocket);
+
+fbSocketSend(
+		sSrvNetId:= SrvNetId, 
+		hSocket:= hSocket, 
+		cbLen:= SIZEOF('PC connected'), 
+		pSrc:= ADR('PC connected'), 
+		bExecute:= bStart6, 
+		tTimeout:= Timeout, 
+		bBusy=> bBusy, 
+		bError=> err, 
+		nErrId=> errid);
+
+
+fbSocketReceive(
+	sSrvNetId:= SrvNetId, 
+	hSocket:= hSocket, 
+	cbLen:= SIZEOF(command), 
+	pDest:= ADR(command), 
+	bExecute:= bStart3, 
+	tTimeout:= , 
+	bBusy=> , 
+	bError=> , 
+	nErrId=> , 
+	nRecBytes=> );
+	
+fbSocketClose(
+	sSrvNetId:= SrvNetId, 
+	hSocket:= hSocket, 
+	bExecute:= bStart4, 
+	tTimeout:= Timeout, 
+	bBusy=> bBusy, 
+	bError=> err, 
+	nErrId=> errid);
+	
+fbSocketCloseAll( bExecute:= bStart5 );
+*)
+	]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

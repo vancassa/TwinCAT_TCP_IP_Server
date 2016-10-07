@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4020.3">
+  <GVL Name="GVL" Id="{1d6b1c83-7ebc-404f-bdd4-ddf1dc4aaa32}">
+    <Declaration><![CDATA[VAR_GLOBAL CONSTANT
+	bLogDebugMessages								: BOOL := TRUE;
+
+	MAX_CLIENT_CONNECTIONS						: UDINT(1..20) := 5; 
+	MAX_PLCPRJ_RXBUFFER_SIZE					: UDINT := 1000;
+
+
+	PLCPRJ_RECONNECT_TIME						: TIME := T#3s;
+	PLCPRJ_SEND_CYCLE_TIME						: TIME := T#1s;
+	PLCPRJ_ACCEPT_POLLING_TIME					: TIME := T#1S; 
+
+	PLCPRJ_RECEIVE_POLLING_TIME		 			: TIME := T#1s;
+	PLCPRJ_RECEIVE_TIMEOUT						: TIME := T#10s;
+
+	(* Some project specific error codes *)
+	PLCPRJ_ERROR_RECEIVE_BUFFER_OVERFLOW	: UDINT := 16#8101; (* receive buffer overflow*)
+	PLCPRJ_ERROR_RECEIVE_TIMEOUT				: UDINT := 16#8102;(* receive timeout error *)
+END_VAR]]></Declaration>
+  </GVL>
+</TcPlcObject>
