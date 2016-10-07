@@ -35,7 +35,7 @@ TwinCAT Error and Error ID are stored in the variable 'err' and 'errid' respecti
 
    * 8002 : Variable 'hSocket' is not populated with the correct address. The client should connect first, and TwinCAT calls the FB_SocketAccept after that. This will populate the variable 'hSocket'.
    * 8003 : The port is already opened. Reset Cold the program and Run again.  
-   * : I don't know. Seems like there's something wrong with the installation of TF6310.  
+   * 6 : I don't know. Seems like there's something wrong with the installation of TF6310.  
    
 Python error:
    * Connection is refused: Make sure to disable the firewall of your server PC  
