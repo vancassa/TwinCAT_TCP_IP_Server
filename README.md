@@ -6,7 +6,7 @@ CX5120 with TwinCAT TCP/IP installed (get TF6310 from https://www.beckhoff.com/e
 EL2088 or other digital output card
 TCP/IP client PC
 
-![alt tag](http://url/to/img.png)
+![alt tag](https://puu.sh/rAjLc/58a5d20a95.png)
 
 Since TwinCAT running in my CX5120 is the TwinCAT Runtime (XAR), the development of the code is in my TwinCAT Engineering (XAE) computer, with the CX5120 as the target computer.
 
