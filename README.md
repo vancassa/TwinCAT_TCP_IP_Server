@@ -2,9 +2,9 @@
 This is a very simple test for TwinCAT TCP/IP Server with a Python TCP/IP client.
 
 Components used:
-CX5120 with TwinCAT TCP/IP installed (get TF6310 from https://www.beckhoff.com/english.asp?twincat/twincat_tcpip_server.htm)
-EL2088 or other digital output card
-TCP/IP client PC
+1. CX5120 with TwinCAT TCP/IP installed (get TF6310 from https://www.beckhoff.com/english.asp?twincat/twincat_tcpip_server.htm)
+2. EL2088 or other digital output card
+3. TCP/IP client PC with Python installed
 
 ![alt tag](https://puu.sh/rAjLc/58a5d20a95.png)
 
