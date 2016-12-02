@@ -27,9 +27,9 @@ What's happening inside the function block FB_TcpServer:
 
 TwinCAT Error and Error ID are stored in the variable 'err' and 'errid' respectively. Some common errors found:
 
-   * 8002 : Variable 'hSocket' is not populated with the correct address. The client should connect first, and TwinCAT calls the FB_SocketAccept after that. This will populate the variable 'hSocket'.
-   * 8003 : The port is already opened. Reset Cold the program and Run again.  
-   * 6 : There's something wrong with the installation of TF6310. Uninstall TF6310 from Control Panel, and reinstall back. Open your Task Manager - Processes, make sure there's TcpIpServer.exe running in the process.
+   * 8002 : Variable 'hSocket' is not populated with the correct address. The sequence is for the TwinCAT to call FB_SocketListen, the Python client to connect, and TwinCAT calls the FB_SocketAccept after that. This will populate the variable 'hSocket'. If FB_SocketAccept is called before the Python client trying to connect, it will throw 8002 error.
+   * 8003 : The port is already opened. Reset Cold the TwinCAT program and Run again.  
+   * 6 : I don't know. Seems like there's something wrong with the installation of TF6310. Uninstall, reinstall, make sure that TcpIpServer.exe is running in your Task Manager processes.
    
 Python error:
    * Connection is refused: Make sure to disable the firewall of your server PC  

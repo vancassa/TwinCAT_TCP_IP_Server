@@ -6,7 +6,7 @@ VAR
 	fbTcpServer 	: FB_TcpServer;
 	
 	SrvNetId		: STRING := '';
-	ServerAddress 	: STRING := '127.0.0.1';
+	ServerAddress 	: STRING := '127.0.1.1';
 	ServerPort 		: UDINT := 30000;
 	
 	sResponse		: STRING;
