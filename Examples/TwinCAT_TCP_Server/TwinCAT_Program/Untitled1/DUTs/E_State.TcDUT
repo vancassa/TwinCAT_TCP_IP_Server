@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4020.6">
+  <DUT Name="E_State" Id="{63a6f567-c3f9-4d8d-80e7-6dd36180d8e9}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+TYPE E_State :
+(
+ 	STATE_INIT,
+	STATE_CONNECTING,
+	STATE_RECEIVING_DATA,
+	STATE_SENDING_DATA,
+	STATE_PROCESSING_DATA
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>
