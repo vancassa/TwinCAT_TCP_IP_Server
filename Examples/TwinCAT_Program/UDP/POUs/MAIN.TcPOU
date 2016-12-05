@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4020.6">
+  <POU Name="MAIN" Id="{3f0619b8-c05e-4f4b-9f02-26b9299e398b}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM MAIN
+VAR
+	fbSocketCreate	: FB_SocketUdpCreate;
+	fbReceive		: FB_SocketUdpReceiveFrom;
+	fbSend			: FB_SocketUdpSendTo;
+	
+	NetId: STRING := '';
+	HostAdr: STRING := '127.0.0.1';
+	Port: UDINT := 5005;
+	hSocket: T_HSOCKET;
+	
+	sReceive : STRING;
+	sSend : STRING := 'Neomuhae';
+	
+	
+	
+	
+	fb1:FB_SocketConnect;
+	fb2:FB_SocketReceive;
+	fb3:FB_SocketSend;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[fbSocketCreate(
+	sSrvNetId:= NetId, 
+	sLocalHost:= HostAdr, 
+	nLocalPort:= Port, 
+	bExecute:= , 
+	tTimeout:= , 
+	bBusy=> , 
+	bError=> , 
+	nErrId=> , 
+	hSocket=> hSocket);
+	
+fbReceive(
+	sSrvNetId:= NetId, 
+	hSocket:= hSocket, 
+	cbLen:= SIZEOF(sReceive), 
+	pDest:= ADR(sReceive), 
+	bExecute:= , 
+	tTimeout:= , 
+	bBusy=> , 
+	bError=> , 
+	nErrId=> , 
+	sRemoteHost=> , 
+	nRemotePort=> , 
+	nRecBytes=> );
+	
+fbSend(
+	sSrvNetId:= NetId, 
+	hSocket:= hSocket, 
+	sRemoteHost:= HostAdr, 
+	nRemotePort:= Port, 
+	cbLen:= LEN(sSend), 
+	pSrc:= ADR(sSend), 
+	bExecute:= , 
+	tTimeout:= , 
+	bBusy=> , 
+	bError=> , 
+	nErrId=> );
+	
+	
+fb1(
+	sSrvNetId:= NetId, 
+	sRemoteHost:= HostAdr, 
+	nRemotePort:= Port, 
+	bExecute:= , 
+	tTimeout:= , 
+	bBusy=> , 
+	bError=> , 
+	nErrId=> , 
+	hSocket=> hSocket);
+	
+fb2(
+	sSrvNetId:= NetId, 
+	hSocket:= hSocket, 
+	cbLen:= SIZEOF(sReceive), 
+	pDest:= ADR(sReceive), 
+	bExecute:= , 
+	tTimeout:= , 
+	bBusy=> , 
+	bError=> , 
+	nErrId=> , 
+	nRecBytes=> );
+	
+fb3(
+	sSrvNetId:= NetId, 
+	hSocket:= hSocket, 
+	cbLen:= LEN(sSend), 
+	pSrc:= ADR(sSend), 
+	bExecute:= , 
+	tTimeout:= , 
+	bBusy=> , 
+	bError=> , 
+	nErrId=> );]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

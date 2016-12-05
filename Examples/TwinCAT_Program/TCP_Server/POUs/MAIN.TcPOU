@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4020.6">
+  <POU Name="MAIN" Id="{51edf94c-8a91-4167-a283-3931655e3d9d}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM MAIN
+VAR
+	fbTcpServer 	: FB_TcpServer;
+	SrvNetId		: STRING := '';
+	ServerAddress 	: STRING := '127.0.0.1';
+	ServerPort 		: UDINT := 30000;
+	
+	sResponse		: STRING;
+	sCommand		: STRING;
+	bBusy			: BOOL;
+	err				: BOOL;
+	errid			: UDINT;
+	
+	bVar1			: BOOL;
+	bVar2			: BOOL;
+	test: STRING;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[fbTcpServer(
+	NetId:= SrvNetId, 
+	ServerAdr:= ServerAddress, 
+	ServerPort:= ServerPort, 
+	sSend := sResponse,
+	sReceive=> sCommand, 
+	bBusy=> bBusy, 
+	err=> err, 
+	errid=> errid);
+
+sResponse := sCommand;
+
+IF sCommand = 'On1' THEN
+	bVar1 := TRUE;
+ELSIF sCommand = 'On2' THEN
+	bVar2 := TRUE;
+ELSE
+	bVar1 := FALSE;
+	bVar2 := FALSE;
+END_IF]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>
